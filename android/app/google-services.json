@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "314535516074",
+    "project_id": "gawee-app-befcc",
+    "storage_bucket": "gawee-app-befcc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314535516074:android:dbfa02b75b0e54d7aabdd3",
+        "android_client_info": {
+          "package_name": "com.example.apkgawee.apkgawee1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA16DCLQN2rBhxYhUjTjy7igFHr_J8ROhk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314535516074:android:957ccb14959d6657aabdd3",
+        "android_client_info": {
+          "package_name": "com.example.apkgawee1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA16DCLQN2rBhxYhUjTjy7igFHr_J8ROhk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
