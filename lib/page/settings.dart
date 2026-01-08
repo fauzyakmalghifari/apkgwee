@@ -25,7 +25,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 🔹 WATCH hanya untuk membaca state
     final themeProvider = context.watch<ThemeProvider>();
 
     return Scaffold(
@@ -65,7 +64,6 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// ================= LAYOUT MODE =================
             Text(
               "Layout Themes",
               style: TextStyle(
@@ -104,7 +102,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: 24),
 
-            /// ================= COLOR THEME =================
             Text(
               "Default Color Themes",
               style: TextStyle(
@@ -160,7 +157,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  /// ================= COMPONENT =================
   Widget _infoCard(BuildContext context, String text,
       {required Widget child}) {
     return Container(

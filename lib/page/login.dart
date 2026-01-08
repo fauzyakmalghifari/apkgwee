@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => isLoading = true);
 
     try {
-      ///LOGIN + VALIDASI ROLE
+      ///LOGIN dan VALIDASI ROLE
       final userCredential = await _authService.loginWithRoleCheck(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),

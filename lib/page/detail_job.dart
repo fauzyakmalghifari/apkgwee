@@ -32,8 +32,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
     jobId = ModalRoute.of(context)!.settings.arguments as String;
     _loadJobDetail();
   }
-
-  /// ================= LOAD JOB =================
   Future<void> _loadJobDetail() async {
     final jobDoc = await FirebaseFirestore.instance
         .collection('jobs')
@@ -110,7 +108,6 @@ class _JobDetailPageState extends State<JobDetailPage> {
         ],
       ),
 
-      /// ================= BODY =================
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -168,7 +165,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
         ),
       ),
 
-      /// ================= BOTTOM =================
+      //bottom
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -233,7 +230,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
     );
   }
 
-  /// ================= COMPONENT =================
+  //component
   Widget _badge(BuildContext context, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -280,7 +277,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
     );
   }
 
-  /// ================= APPLY SHEET =================
+  //apply sheet
   void _showApplyJobSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,

@@ -53,7 +53,6 @@ class _CompanyListPageState extends State<CompanyListPage> {
         child: Column(
           children: [
 
-            // ===== SEARCH BAR =====
             TextField(
               decoration: InputDecoration(
                 hintText: "Type Company Name",

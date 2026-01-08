@@ -4,14 +4,13 @@ class ThemeProvider extends ChangeNotifier {
   bool _isDarkMode = false;
   Color _primaryColor = Colors.deepPurple;
 
-  // ================= GETTER =================
   bool get isDarkMode => _isDarkMode;
   Color get primaryColor => _primaryColor;
 
   ThemeMode get themeMode =>
       _isDarkMode ? ThemeMode.dark : ThemeMode.light;
 
-  // ================= LIGHT THEME =================
+  //mode terang
   ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
@@ -43,7 +42,7 @@ class ThemeProvider extends ChangeNotifier {
     ),
   );
 
-  // ================= DARK THEME =================
+  //mode gelap
   ThemeData get darkTheme => ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
@@ -75,7 +74,6 @@ class ThemeProvider extends ChangeNotifier {
     ),
   );
 
-  // ================= ACTION =================
   void toggleDarkMode(bool value) {
     _isDarkMode = value;
     notifyListeners();

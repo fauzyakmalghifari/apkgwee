@@ -13,19 +13,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // ===== USER DATA =====
+  //user data
   bool isCompany = false;
   String username = "";
   bool isLoading = true;
 
-  // ===== CATEGORY FILTER =====
+  //search
+  final TextEditingController _searchController = TextEditingController();
+  String searchText = "";
+
+  //category filter
   String? selectedCategory;
 
-  final List<String> categories = [
-    "Designer",
-    "Manager",
-    "Programmer",
-  ];
+  final List<String> categories = ["Designer", "Manager", "Programmer"];
 
   @override
   void initState() {
@@ -63,7 +63,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // ===== JOB STREAM WITH CATEGORY FILTER =====
   Stream<QuerySnapshot> _jobStream() {
     if (selectedCategory == null) {
       return FirebaseFirestore.instance
@@ -83,16 +82,12 @@ class _HomePageState extends State<HomePage> {
     final themeProvider = context.watch<ThemeProvider>();
 
     if (isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       drawer: const AppDrawer(activeMenu: "home"),
-
-      // ===== APP BAR =====
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
@@ -105,9 +100,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: Icon(
-              themeProvider.isDarkMode
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
+              themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
             ),
             onPressed: () {
               themeProvider.toggleDarkMode(!themeProvider.isDarkMode);
@@ -116,13 +109,12 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
 
-      // ===== BODY =====
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// HEADER
+            //header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -146,24 +138,33 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 16),
 
-            /// SEARCH
+            //search
             if (!isCompany)
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Search job here...",
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  fillColor: Theme.of(context).cardColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() {
+                      searchText = value.toLowerCase();
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Search job here...",
+                    prefixIcon: const Icon(Icons.search),
+                    filled: true,
+                    fillColor: Theme.of(context).cardColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
               ),
 
             const SizedBox(height: 20),
 
-            /// RECOMMENDED
+            //recomended
             if (!isCompany)
               Container(
                 padding: const EdgeInsets.all(16),
@@ -204,9 +205,10 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
-                Text("Job Categories",
-                    style:
-                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(
+                  "Job Categories",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 Text("More", style: TextStyle(color: Colors.deepPurple)),
               ],
             ),
@@ -220,12 +222,10 @@ class _HomePageState extends State<HomePage> {
                 return ChoiceChip(
                   label: Text(category),
                   selected: isActive,
-                  selectedColor:
-                  Theme.of(context).colorScheme.primary,
+                  selectedColor: Theme.of(context).colorScheme.primary,
                   onSelected: (_) {
                     setState(() {
-                      selectedCategory =
-                      isActive ? null : category;
+                      selectedCategory = isActive ? null : category;
                     });
                   },
                   labelStyle: TextStyle(
@@ -238,7 +238,7 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 24),
 
-            /// FEATURED JOBS
+            //fetured jobs
             const Text(
               "Featured Jobs",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -249,21 +249,31 @@ class _HomePageState extends State<HomePage> {
             StreamBuilder<QuerySnapshot>(
               stream: _jobStream(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState ==
-                    ConnectionState.waiting) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 }
 
-                if (!snapshot.hasData ||
-                    snapshot.data!.docs.isEmpty) {
-                  return const Text(
-                      "Tidak ada pekerjaan di kategori ini");
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Text("Tidak ada pekerjaan di kategori ini");
+                }
+                final docs = snapshot.data!.docs.where((doc) {
+                  if (searchText.isEmpty) return true;
+                  final data = doc.data() as Map<String, dynamic>;
+                  final title = (data['title'] ?? '').toString().toLowerCase();
+                  final location = (data['location'] ?? '')
+                      .toString()
+                      .toLowerCase();
+                  return title.contains(searchText) ||
+                      location.contains(searchText);
+                }).toList();
+
+                if (docs.isEmpty) {
+                  return const Text("Pekerjaan tidak ditemukan");
                 }
 
                 return Column(
-                  children: snapshot.data!.docs.map((doc) {
-                    final data =
-                    doc.data() as Map<String, dynamic>;
+                  children: docs.map((doc) {
+                    final data = doc.data() as Map<String, dynamic>;
                     return _jobCard(
                       jobId: doc.id,
                       title: data['title'],
@@ -280,10 +290,9 @@ class _HomePageState extends State<HomePage> {
 
       floatingActionButton: isCompany
           ? FloatingActionButton(
-        onPressed: () =>
-            Navigator.pushNamed(context, '/add-job'),
-        child: const Icon(Icons.add),
-      )
+              onPressed: () => Navigator.pushNamed(context, '/add-job'),
+              child: const Icon(Icons.add),
+            )
           : null,
     );
   }
@@ -295,22 +304,15 @@ class _HomePageState extends State<HomePage> {
     required String location,
   }) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
-        leading: const Icon(Icons.work,
-            color: Colors.deepPurpleAccent),
+        leading: const Icon(Icons.work, color: Colors.deepPurpleAccent),
         title: Text(title),
         subtitle: Text("$location\n$salary"),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/detail-job',
-            arguments: jobId,
-          );
+          Navigator.pushNamed(context, '/detail-job', arguments: jobId);
         },
       ),
     );

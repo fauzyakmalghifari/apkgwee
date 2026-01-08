@@ -37,7 +37,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
       body: Column(
         children: [
-          /// ================= CHAT LIST =================
+          //chat list
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
